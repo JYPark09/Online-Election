@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bufio"
+	"context"
 	"io"
 	"log"
 	"os"
@@ -15,4 +17,27 @@ func main() {
 
 	mw := io.MultiWriter(os.Stderr, logFile)
 	log.SetOutput(mw)
+
+	srv := startServer(":52525")
+
+	scanner := bufio.NewScanner(os.Stdin)
+
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		if line == "stop" {
+			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+			defer cancel()
+
+			if err = srv.Shutdown(ctx); err != nil {
+				log.Fatalln("[http] shutdown failed ", err)
+			}
+
+			break
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatalln(err)
+	}
 }

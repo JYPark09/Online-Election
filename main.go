@@ -19,6 +19,8 @@ func main() {
 	mw := io.MultiWriter(os.Stderr, logFile)
 	log.SetOutput(mw)
 
+	initDatabaseManager("database.db")
+
 	port := 52525
 	if len(os.Args) == 2 {
 		if port, err = strconv.Atoi(os.Args[1]); err != nil {
@@ -48,4 +50,6 @@ func main() {
 	if err := scanner.Err(); err != nil {
 		log.Fatalln(err)
 	}
+
+	shutdownDatabaseManager()
 }

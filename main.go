@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -18,7 +19,14 @@ func main() {
 	mw := io.MultiWriter(os.Stderr, logFile)
 	log.SetOutput(mw)
 
-	srv := startServer(":52525")
+	port := 52525
+	if len(os.Args) == 2 {
+		if port, err = strconv.Atoi(os.Args[1]); err != nil {
+			log.Fatalln("invalid port ", os.Args[1])
+		}
+	}
+
+	srv := startServer(":" + strconv.Itoa(port))
 
 	scanner := bufio.NewScanner(os.Stdin)
 

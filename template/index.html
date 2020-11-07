@@ -4,6 +4,25 @@
 </head>
 
 <body>
-<h1><p>Hello World!</p></h1>
+<h3><p>진행중인 선거</p></h3>
+{{ range .During }}
+<p>{{ .Name }}</p>
+{{ else }}
+<p>해당하는 선거가 없습니다.</p>
+{{ end }}
+
+<h3><p>완료된 선거</p></h3>
+{{ range .Done }}
+<p>{{ .Name }}</p>
+{{ else }}
+<p>해당하는 선거가 없습니다.</p>
+{{ end }}
+
+<h3><p>준비중인 선거</p></h3>
+{{ range .Ready }}
+<p>{{ .Name }}</p>
+{{ else }}
+<p>해당하는 선거가 없습니다.</p>
+{{ end }}
 </body>
 </html>

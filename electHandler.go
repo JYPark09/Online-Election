@@ -30,11 +30,17 @@ func electHandler(writer http.ResponseWriter, request *http.Request) {
 
 	pw := request.PostForm.Get("passwd")
 
-	if !checkUserPassword(id, pw) {
-		produceMsg(writer, "올바르지 않은 사용자 정보입니다.")
+	eid, err := strconv.Atoi(request.PostForm.Get("eid"))
+	if err != nil {
+		produceMsg(writer, "알 수 없는 오류가 발생했습니다.")
 		return
 	}
-	//candi := request.PostForm.Get("candi")
 
-	produceMsg(writer, "투표가 완료되었습니다.")
+	candi := request.PostForm.Get("candi")
+
+	if vote(id, pw, eid, candi) {
+		produceMsg(writer, "투표가 완료되었습니다.")
+	} else {
+		produceMsg(writer, "투표에 실패하였습니다.")
+	}
 }

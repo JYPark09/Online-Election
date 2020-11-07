@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -35,9 +36,9 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for scanner.Scan() {
-		line := scanner.Text()
+		cmd := scanner.Text()
 
-		if line == "stop" {
+		if cmd == "stop" {
 			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 			defer cancel()
 
@@ -46,8 +47,24 @@ func main() {
 			}
 
 			break
-		} else if line == "reload_elections" {
+		} else if cmd == "reload_elections" {
 			loadAllElections()
+		} else if cmd == "begin" {
+			scanner.Scan()
+			id, err := strconv.Atoi(scanner.Text())
+			if err != nil || !beginElection(id) {
+				fmt.Println("Cannot begin election.")
+			}
+		} else if cmd == "end" {
+			scanner.Scan()
+			id, err := strconv.Atoi(scanner.Text())
+			if err != nil || !endElection(id) {
+				fmt.Println("Cannot end election.")
+			}
+		} else if cmd == "list_election" {
+			for idx, elect := range elections {
+				fmt.Printf("%d - %s\n", idx, elect.Name)
+			}
 		}
 	}
 

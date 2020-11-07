@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"strconv"
+	"strings"
 )
 
 type ELECTION_STATUS int
@@ -21,6 +23,10 @@ type Election struct {
 	Candidates []string
 
 	ID int
+
+	fname string
+	users []int
+	votes []string
 }
 
 var elections []Election
@@ -37,6 +43,9 @@ func loadElection(filepath string) Election {
 		log.Fatalln("[election] cannot unmarshal election ", err)
 	}
 
+	election.fname = filepath
+	election.Status = READY
+
 	return election
 }
 
@@ -51,7 +60,7 @@ func loadAllElections() {
 
 	id := 0
 	for _, file := range files {
-		if file.IsDir() {
+		if file.IsDir() || !strings.HasSuffix(file.Name(), ".json") {
 			continue
 		}
 
@@ -64,4 +73,92 @@ func loadAllElections() {
 	}
 
 	log.Println("[election] load all elections done")
+}
+
+func getElection(id int) *Election {
+	if len(elections) <= id {
+		return nil
+	}
+
+	return &elections[id]
+}
+
+func beginElection(id int) bool {
+	elect := getElection(id)
+
+	if elect == nil {
+		log.Println("[election] invalid election. " + strconv.Itoa(id))
+		return false
+	}
+
+	if elect.Status != READY {
+		return false
+	}
+
+	elect.users = nil
+	elect.votes = nil
+
+	elect.Status = DURING
+
+	log.Println("[election] begin election " + elect.Name)
+
+	return true
+}
+
+func endElection(id int) bool {
+	elect := getElection(id)
+
+	if elect == nil {
+		log.Println("[election] invalid election. " + strconv.Itoa(id))
+
+		return false
+	}
+
+	var result struct {
+		Users []int
+		Votes []string
+	}
+
+	result.Users = elect.users
+	result.Votes = elect.votes
+
+	file, _ := json.MarshalIndent(result, "", "  ")
+	err := ioutil.WriteFile(elect.fname+"_result", file, 0775)
+	if err != nil {
+		log.Fatalln("[election] cannot end election ", err)
+	}
+
+	file, _ = json.MarshalIndent(elect, "", "  ")
+	err = ioutil.WriteFile(elect.fname, file, 0775)
+	if err != nil {
+		log.Fatalln("[election] cannot end election ", err)
+	}
+
+	elect.Status = DONE
+
+	log.Println("[election] end election " + elect.Name)
+
+	return true
+}
+
+func vote(id int, pw string, eid int, candi string) bool {
+	if !checkUserPassword(id, pw) {
+		return false
+	}
+
+	elect := getElection(eid)
+	if elect == nil {
+		return false
+	}
+
+	for _, user := range elect.users {
+		if user == id {
+			return false
+		}
+	}
+
+	elect.users = append(elect.users, id)
+	elect.votes = append(elect.votes, candi)
+
+	return true
 }

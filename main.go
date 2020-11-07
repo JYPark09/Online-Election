@@ -21,6 +21,8 @@ func main() {
 
 	initDatabaseManager("database.db")
 
+	loadAllElections()
+
 	port := 52525
 	if len(os.Args) == 2 {
 		if port, err = strconv.Atoi(os.Args[1]); err != nil {
@@ -44,6 +46,8 @@ func main() {
 			}
 
 			break
+		} else if line == "reload_elections" {
+			loadAllElections()
 		}
 	}
 

@@ -1,3 +1,6 @@
 .vscode
 Online-Election
+
 logs
+elections
+*.db

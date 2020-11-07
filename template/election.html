@@ -1,0 +1,31 @@
+<html>
+<head>
+<title>{{ .Name }}</title>
+</head>
+
+<body>
+<h1><p>{{ .Name }}</p></h1>
+<hr/>
+
+<form action="elect" method="post">
+    <p>후보자 :
+    <select name="candi">
+        {{ range .Candidates }}
+        <option value="{{ . }}">{{ . }}</option>
+        {{ end }}
+    </select>
+
+    </p>
+
+    <p> ID : 
+    <input name="userid" type="text" />
+    </p>
+    <p> Password : 
+    <input name="passwd" type="password" />
+    </p>
+
+    <input type="hidden" name="eid" value={{ .ID }} />
+    <input type="submit" />
+</form>
+</body>
+</html>

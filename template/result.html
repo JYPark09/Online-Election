@@ -1,0 +1,20 @@
+<html>
+<head>
+<title>{{ .Name }}</title>
+</head>
+
+<body>
+<h1><p>{{ .Name }} 개표 결과</p></h1>
+<hr/>
+
+<h3><p>당선자</p></h3>
+{{ range .Winner }}
+<p>{{ . }}</p>
+{{ end }}
+
+<h3><p>득표수</p></h3>
+{{ range .Result }}
+<p>{{ .Candidate }} - {{ .Count }}표 ({{ .Percent }}%)</p>
+{{ end }}
+</body>
+</html>

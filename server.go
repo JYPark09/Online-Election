@@ -12,6 +12,7 @@ func startServer(port string) *http.Server {
 	http.HandleFunc("/", mainHandler)
 	http.HandleFunc("/elect_view", electViewHandler)
 	http.HandleFunc("/elect", electHandler)
+	http.HandleFunc("/result", resultHandler)
 
 	go func() {
 		if err := srv.ListenAndServe(); err != http.ErrServerClosed {

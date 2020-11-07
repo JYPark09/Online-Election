@@ -13,7 +13,7 @@
 
 <h3><p>완료된 선거</p></h3>
 {{ range .Done }}
-<p>{{ .Name }}</p>
+<a href="/result?id={{ .ID }}"><p>{{ .Name }}</p></a>
 {{ else }}
 <p>해당하는 선거가 없습니다.</p>
 {{ end }}

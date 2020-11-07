@@ -9,8 +9,19 @@ import (
 func electViewHandler(writer http.ResponseWriter, request *http.Request) {
 	id, err := strconv.Atoi(request.FormValue("id"))
 
-	if err != nil || len(elections) <= id {
+	if err != nil {
 		produceMsg(writer, "알 수 없는 오류가 발생했습니다.")
+		return
+	}
+
+	elect := getElection(id)
+	if elect == nil {
+		produceMsg(writer, "알 수 없는 오류가 발생했습니다.")
+		return
+	}
+
+	if elect.Status != DURING {
+		produceMsg(writer, "투표 가능 시간이 아닙니다.")
 		return
 	}
 

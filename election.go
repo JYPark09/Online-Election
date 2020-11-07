@@ -137,8 +137,33 @@ func endElection(id int) bool {
 	elect.Status = DONE
 
 	log.Println("[election] end election " + elect.Name)
+	log.Println("[election] result")
+	log.Printf("%d voted\n", len(result.Users))
+
+	res := getResult(elect)
+	for name, count := range res {
+		log.Printf("%s - %d\n", name, count)
+	}
 
 	return true
+}
+
+func getResult(elect *Election) map[string]int {
+	res := make(map[string]int)
+
+	if elect.Status != DONE {
+		return nil
+	}
+
+	for _, name := range elect.Candidates {
+		res[name] = 0
+	}
+
+	for _, name := range elect.votes {
+		res[name]++
+	}
+
+	return res
 }
 
 func vote(id int, pw string, eid int, candi string) bool {

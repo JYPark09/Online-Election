@@ -6,7 +6,7 @@
 <body>
 <h3><p>진행중인 선거</p></h3>
 {{ range .During }}
-<p>{{ .Name }}</p>
+<a href="/elect_view?id={{ .ID }}"><p>{{ .Name }}</p></a>
 {{ else }}
 <p>해당하는 선거가 없습니다.</p>
 {{ end }}

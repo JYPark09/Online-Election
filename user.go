@@ -19,5 +19,5 @@ func checkUserPassword(id int, pw string) bool {
 		return false
 	}
 
-	return getEncryptedPassword(pw) == usr.pw
+	return pw == usr.pw
 }

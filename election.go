@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type ELECTION_STATUS int
@@ -184,6 +186,9 @@ func vote(id int, pw string, eid int, candi string) bool {
 
 	elect.users = append(elect.users, id)
 	elect.votes = append(elect.votes, candi)
+
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(elect.votes), func(i, j int) { elect.votes[i], elect.votes[j] = elect.votes[j], elect.votes[i] })
 
 	return true
 }
